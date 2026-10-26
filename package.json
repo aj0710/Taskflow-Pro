@@ -1,0 +1,21 @@
+{
+  "name": "taskflow-pro",
+  "version": "1.0.0",
+  "description": "TaskFlow Pro - Premium Modern Task & Productivity Management Suite",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "task-manager",
+    "kanban",
+    "pomodoro",
+    "eisenhower-matrix",
+    "productivity",
+    "calendar",
+    "analytics"
+  ],
+  "author": "aj0710 (https://github.com/aj0710)",
+  "license": "MIT"
+}

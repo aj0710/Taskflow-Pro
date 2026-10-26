@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskFlow Pro — Modern Task & Productivity Management Suite</title>
+  <meta name="description" content="TaskFlow Pro is a state-of-the-art productivity suite featuring Kanban boards, Eisenhower decision matrix, interactive table views, calendar scheduling, SVG analytics, and Pomodoro focus timers.">
+  <meta name="theme-color" content="#090d16">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+
+  <!-- Google Fonts: Outfit & Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/views.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Mobile Sidebar Backdrop -->
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
+    <!-- App Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-icon">⚡</div>
+          <div class="brand-title">
+            TaskFlow
+            <span class="brand-badge">PRO</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-content">
+        <!-- Views Navigation -->
+        <div>
+          <div class="nav-section-title">Workspaces</div>
+          <ul class="nav-list">
+            <li>
+              <button class="nav-item-btn active" data-view="kanban" id="nav-btn-kanban">
+                <span class="nav-item-icon">📋</span>
+                <span>Kanban Board</span>
+                <span class="nav-item-badge" id="badge-count-kanban">0</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn" data-view="list" id="nav-btn-list">
+                <span class="nav-item-icon">📑</span>
+                <span>List & Table</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn" data-view="matrix" id="nav-btn-matrix">
+                <span class="nav-item-icon">🎯</span>
+                <span>Priority Matrix</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn" data-view="calendar" id="nav-btn-calendar">
+                <span class="nav-item-icon">📅</span>
+                <span>Calendar</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn" data-view="analytics" id="nav-btn-analytics">
+                <span class="nav-item-icon">📊</span>
+                <span>Analytics</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-item-btn" data-view="pomodoro" id="nav-btn-pomodoro">
+                <span class="nav-item-icon">⏱️</span>
+                <span>Pomodoro Focus</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Projects / Categories Filter Section -->
+        <div>
+          <div class="nav-section-title">Projects & Streams</div>
+          <div id="category-filter-list"></div>
+        </div>
+      </div>
+
+      <!-- Sidebar Footer Progress Widget -->
+      <div class="sidebar-footer">
+        <div class="progress-widget">
+          <div class="progress-header">
+            <span style="font-weight:600; color:var(--text-secondary);">Overall Velocity</span>
+            <span id="sidebar-progress-label" style="font-size:0.75rem; color:var(--text-muted);">0/0 (0%)</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="sidebar-progress-bar" style="width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper Area -->
+    <main class="main-wrapper">
+      <!-- Top Application Header -->
+      <header class="header">
+        <div class="header-left">
+          <button class="btn-icon mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle Navigation">
+            ☰
+          </button>
+
+          <!-- Global Search with hotkey indication -->
+          <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input 
+              type="text" 
+              class="search-input" 
+              id="global-search-input" 
+              placeholder="Search tasks, descriptions, or tags..." 
+              autocomplete="off"
+            >
+            <span class="search-shortcut">/</span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Mini Pomodoro running state banner -->
+          <div id="header-pomo-widget" class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:0.4rem; cursor:pointer;" title="Pomodoro Focus Timer">
+            <span style="font-size:0.8rem; font-family:var(--font-mono); font-weight:700; color:var(--text-muted);">⏱️ 25:00</span>
+          </div>
+
+          <!-- Shortcuts help -->
+          <button class="btn-icon" id="btn-shortcuts-modal" title="Keyboard Shortcuts (?)">
+            ⌨️
+          </button>
+
+          <!-- Export & Backup -->
+          <button class="btn-icon" id="btn-export-modal" title="Backup & Export Data">
+            💾
+          </button>
+
+          <!-- Audio Sound FX Toggle -->
+          <button class="btn-icon" id="btn-sound-toggle" title="Toggle Sound Feedback">
+            🔔
+          </button>
+
+          <!-- Dark / Light Theme Toggle -->
+          <button class="btn-icon" id="btn-theme-toggle" title="Toggle Theme (Dark/Light)">
+            ☀️
+          </button>
+
+          <!-- Quick Add Task Primary CTA -->
+          <button class="btn btn-primary" id="btn-header-add-task">
+            <span>+</span> New Task <span style="font-size:0.72rem; opacity:0.8; margin-left:2px;">[N]</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- View Containers -->
+      <section class="view-container">
+        <!-- Quick Filters Strip -->
+        <div style="padding: 1rem 1.75rem 0; background: var(--bg-primary);">
+          <div class="filter-bar">
+            <button class="filter-chip active" data-filter="all">All Tasks</button>
+            <button class="filter-chip" data-filter="today">🔥 Due Today</button>
+            <button class="filter-chip" data-filter="overdue">⚠️ Overdue</button>
+            <button class="filter-chip" data-filter="urgent">⚡ Urgent Priority</button>
+          </div>
+        </div>
+
+        <!-- 1. Kanban Board -->
+        <div id="view-kanban" class="view-content active"></div>
+
+        <!-- 2. List & Table View -->
+        <div id="view-list" class="view-content"></div>
+
+        <!-- 3. Eisenhower Matrix -->
+        <div id="view-matrix" class="view-content"></div>
+
+        <!-- 4. Calendar -->
+        <div id="view-calendar" class="view-content"></div>
+
+        <!-- 5. Analytics -->
+        <div id="view-analytics" class="view-content"></div>
+
+        <!-- 6. Pomodoro Focus Studio -->
+        <div id="view-pomodoro" class="view-content"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ===================================================================
+       MODAL DIALOGS
+       =================================================================== -->
+  <div class="modal-overlay" id="modal-overlay">
+    <!-- 1. Task Create / Edit Modal -->
+    <div class="modal-container" id="task-modal" style="display:none;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="task-modal-title">Create New Task</h3>
+        <button class="btn-icon modal-close-btn">&times;</button>
+      </div>
+
+      <form id="task-form" style="display:flex; flex-direction:column; overflow:hidden;">
+        <input type="hidden" id="task-form-id">
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="task-form-title">Task Title *</label>
+            <input type="text" id="task-form-title" class="form-input" placeholder="What needs to be accomplished?" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="task-form-desc">Description</label>
+            <textarea id="task-form-desc" class="form-textarea" placeholder="Add rich details, context, or links..."></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="task-form-category">Project Stream</label>
+              <select id="task-form-category" class="form-select"></select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="task-form-priority">Priority</label>
+              <select id="task-form-priority" class="form-select">
+                <option value="urgent">🔴 Urgent</option>
+                <option value="high">🟠 High</option>
+                <option value="medium" selected>🔵 Medium</option>
+                <option value="low">🟢 Low</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="task-form-status">Initial Stage</label>
+              <select id="task-form-status" class="form-select">
+                <option value="backlog">Backlog</option>
+                <option value="todo" selected>To Do</option>
+                <option value="in-progress">In Progress</option>
+                <option value="review">In Review</option>
+                <option value="done">Completed</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="task-form-due-date">Due Date</label>
+              <input type="date" id="task-form-due-date" class="form-input">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="task-form-due-time">Due Time (Optional)</label>
+              <input type="time" id="task-form-due-time" class="form-input">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="task-form-estimate">Estimated Time (Mins)</label>
+              <input type="number" id="task-form-estimate" class="form-input" min="5" step="5" value="30">
+            </div>
+          </div>
+
+          <!-- Subtasks Builder -->
+          <div class="form-group">
+            <label class="form-label">Subtasks & Milestones</label>
+            <div style="display:flex; gap:0.5rem;">
+              <input type="text" id="modal-subtask-quick-input" class="form-input" placeholder="Type a subtask and press Enter...">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-add-modal-subtask">Add</button>
+            </div>
+            <div class="subtasks-builder-list" id="modal-subtasks-container"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="task-form-tags">Tags (Comma-separated)</label>
+            <input type="text" id="task-form-tags" class="form-input" placeholder="e.g. Frontend, Auth, Sprint1">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-close-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-task">Save Task</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- 2. Keyboard Shortcuts Cheat Sheet Modal -->
+    <div class="modal-container" id="shortcuts-modal" style="display:none; max-width:480px;">
+      <div class="modal-header">
+        <h3 class="modal-title">⌨️ Keyboard Shortcuts</h3>
+        <button class="btn-icon modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" style="gap:0.75rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0; border-bottom:1px solid var(--border-subtle);">
+          <span>New Task</span>
+          <kbd class="search-shortcut" style="position:static;">N</kbd>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0; border-bottom:1px solid var(--border-subtle);">
+          <span>Focus Search</span>
+          <kbd class="search-shortcut" style="position:static;">/</kbd>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0; border-bottom:1px solid var(--border-subtle);">
+          <span>Kanban Board</span>
+          <kbd class="search-shortcut" style="position:static;">B</kbd>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0; border-bottom:1px solid var(--border-subtle);">
+          <span>List View</span>
+          <kbd class="search-shortcut" style="position:static;">L</kbd>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0; border-bottom:1px solid var(--border-subtle);">
+          <span>Eisenhower Matrix</span>
+          <kbd class="search-shortcut" style="position:static;">M</kbd>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0; border-bottom:1px solid var(--border-subtle);">
+          <span>Calendar</span>
+          <kbd class="search-shortcut" style="position:static;">C</kbd>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0; border-bottom:1px solid var(--border-subtle);">
+          <span>Analytics</span>
+          <kbd class="search-shortcut" style="position:static;">A</kbd>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0; border-bottom:1px solid var(--border-subtle);">
+          <span>Pomodoro Timer</span>
+          <kbd class="search-shortcut" style="position:static;">P</kbd>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0;">
+          <span>Close Modal / Clear</span>
+          <kbd class="search-shortcut" style="position:static;">Esc</kbd>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary modal-close-btn">Close</button>
+      </div>
+    </div>
+
+    <!-- 3. Export / Backup & Restore Modal -->
+    <div class="modal-container" id="export-modal" style="display:none; max-width:520px;">
+      <div class="modal-header">
+        <h3 class="modal-title">💾 Backup & Data Portability</h3>
+        <button class="btn-icon modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" style="gap:1.25rem;">
+        <div>
+          <h4 style="margin-bottom:0.35rem;">Export Data</h4>
+          <p style="font-size:0.85rem; margin-bottom:0.75rem;">Download all your tasks, subtasks, and categories for safe keeping or spreadsheet analysis.</p>
+          <div style="display:flex; gap:0.75rem;">
+            <button class="btn btn-secondary" id="btn-export-json">📄 Export JSON Backup</button>
+            <button class="btn btn-secondary" id="btn-export-csv">📊 Export CSV (Excel)</button>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid var(--border-subtle); padding-top:1rem;">
+          <h4 style="margin-bottom:0.35rem;">Restore from JSON</h4>
+          <p style="font-size:0.85rem; margin-bottom:0.75rem;">Import a previously exported JSON backup file.</p>
+          <input type="file" id="import-file-input" accept=".json" style="display:none;">
+          <button class="btn btn-secondary" id="btn-trigger-import">📁 Select Backup File</button>
+        </div>
+
+        <div style="border-top:1px solid var(--border-subtle); padding-top:1rem;">
+          <h4 style="margin-bottom:0.35rem; color:var(--status-high);">Demo Workspace Reset</h4>
+          <p style="font-size:0.85rem; margin-bottom:0.75rem;">Restore pre-populated engineering and design demo tasks.</p>
+          <button class="btn btn-danger btn-sm" id="btn-reset-demo">🔄 Reset to Demo Tasks</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary modal-close-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti Particle Celebration Layer -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Interactive Floating Toasts -->
+  <div id="toast-container"></div>
+
+  <!-- Application Bootstrap -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
