@@ -2,7 +2,7 @@
   "name": "taskflow-pro",
   "version": "1.0.0",
   "description": "TaskFlow Pro - Premium Modern Task & Productivity Management Suite",
-  "main": "server.js",
+  "main": "index.html",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
