@@ -167,7 +167,7 @@ node server.js
 ```
 
 Open your browser at:
-👉 **[http://localhost:3000](http://localhost:3000)**
+👉 taskflow-pro-red.vercel.app/
 
 ### Option 2: Standalone Browser Opening
 Double-click `index.html` or open it with your favorite browser:
