@@ -166,8 +166,8 @@ npm start
 node server.js
 ```
 
-Open your browser at:
-👉 taskflow-pro-red.vercel.app/
+Open your browser at:  taskflow-pro-red.vercel.app/
+
 
 ### Option 2: Standalone Browser Opening
 Double-click `index.html` or open it with your favorite browser:
